@@ -24,6 +24,13 @@ HealthHub is a comprehensive, digital-first Health Insurance Management platform
 - **Digital_Encounter**: Electronic record of patient visit or medical service interaction
 - **Referral_Workflow**: Process for transferring patient care between healthcare facilities
 - **Payment_Gateway**: Secure system for processing premium payments and provider payouts
+- **Payment_Provider**: External service that processes financial transactions (e.g., Remita, Flutterwave, Paystack)
+- **Payment_Provider_Configuration**: Settings that define how the platform connects to and uses specific payment providers
+- **Payment_Abstraction_Layer**: System component that provides uniform interface for different payment providers
+- **Manual_Payment**: Payment made outside the digital platform that requires manual recording and verification
+- **Payment_Reconciliation**: Process of matching manual payments with enrollee accounts and outstanding balances
+- **Payment_Record**: Complete transaction history including digital and manual payments for audit purposes
+- **Payment_Provider_Manager**: System component that manages multiple payment provider configurations and routing
 - **Audit_Log**: Tamper-evident record of all system activities and transactions
 - **Role_Based_Access**: Security system that grants permissions based on user roles
 
@@ -125,17 +132,17 @@ HealthHub is a comprehensive, digital-first Health Insurance Management platform
 4. THE HealthHub_Platform SHALL provide transparent claim status tracking from submission to payout
 5. WHEN claims processing is complete, THE Claims_Engine SHALL initiate payout within 48 hours
 
-### Requirement 9: Secure Payment Integration
+### Requirement 9: Configurable Payment Provider Integration
 
-**User Story:** As an enrollee, I want to pay premiums securely online, so that I can maintain my coverage conveniently.
+**User Story:** As an agency administrator, I want to configure multiple payment providers for our deployment, so that we can use our preferred payment gateway and provide payment flexibility to enrollees.
 
 #### Acceptance Criteria
 
-1. THE Payment_Gateway SHALL support multiple payment methods including bank transfers and card payments
-2. WHEN processing premium payments, THE Payment_Gateway SHALL encrypt all financial data using AES-256
-3. THE HealthHub_Platform SHALL generate payment confirmations within 60 seconds of successful transactions
-4. THE Payment_Gateway SHALL handle bulk provider payouts with batch processing capabilities
-5. IF payment processing fails, THEN THE Payment_Gateway SHALL provide specific error codes and retry mechanisms
+1. THE Payment_Abstraction_Layer SHALL support multiple Payment_Providers through configurable settings
+2. WHEN processing premium payments, THE Payment_Gateway SHALL route transactions to the configured Payment_Provider for the agency
+3. THE Payment_Provider_Manager SHALL validate Payment_Provider_Configuration before enabling payment processing
+4. THE HealthHub_Platform SHALL encrypt all financial data using AES-256 regardless of Payment_Provider
+5. WHEN payment processing fails, THEN THE Payment_Gateway SHALL provide provider-specific error codes and retry mechanisms through the abstraction layer
 
 ### Requirement 10: Financial Reporting and Reconciliation
 
@@ -149,7 +156,55 @@ HealthHub is a comprehensive, digital-first Health Insurance Management platform
 4. THE HealthHub_Platform SHALL track financial metrics by geographic regions and provider categories
 5. THE HealthHub_Platform SHALL export financial data in standard accounting formats (CSV, Excel, PDF)
 
-### Requirement 11: Role-Based Access Control
+### Requirement 11: Manual Payment Processing
+
+**User Story:** As an agency staff member, I want to record payments made outside the digital platform, so that enrollee accounts accurately reflect all payments received.
+
+#### Acceptance Criteria
+
+1. THE HealthHub_Platform SHALL provide secure interfaces for recording Manual_Payments by authorized staff
+2. WHEN recording a Manual_Payment, THE HealthHub_Platform SHALL require payment method, amount, date, and verification documentation
+3. THE HealthHub_Platform SHALL validate Manual_Payment entries against enrollee account balances and outstanding premiums
+4. THE HealthHub_Platform SHALL generate Manual_Payment receipts with unique reference numbers for audit trails
+5. THE HealthHub_Platform SHALL require supervisor approval for Manual_Payments exceeding configurable thresholds
+
+### Requirement 12: Payment Provider Management
+
+**User Story:** As an agency administrator, I want to manage and configure payment providers for our deployment, so that we can control how payments are processed and switch providers when needed.
+
+#### Acceptance Criteria
+
+1. THE Payment_Provider_Manager SHALL support configuration of multiple Payment_Providers simultaneously
+2. THE HealthHub_Platform SHALL allow agency administrators to set primary and backup Payment_Providers through configuration
+3. WHEN a Payment_Provider becomes unavailable, THE HealthHub_Platform SHALL automatically failover to backup providers
+4. THE HealthHub_Platform SHALL provide Payment_Provider performance monitoring and transaction success rates
+5. THE HealthHub_Platform SHALL support Payment_Provider testing in sandbox mode before production activation
+
+### Requirement 13: Payment Reconciliation Workflows
+
+**User Story:** As a finance officer, I want tools to reconcile manual payments with enrollee accounts, so that I can ensure all payments are properly recorded and accounted for.
+
+#### Acceptance Criteria
+
+1. THE HealthHub_Platform SHALL provide Payment_Reconciliation dashboards showing unmatched payments and outstanding balances
+2. WHEN performing reconciliation, THE HealthHub_Platform SHALL suggest potential matches between Manual_Payments and enrollee accounts
+3. THE HealthHub_Platform SHALL allow bulk reconciliation of payments through file upload and automated matching
+4. THE HealthHub_Platform SHALL maintain complete Payment_Records combining digital and manual transactions for each enrollee
+5. THE HealthHub_Platform SHALL generate reconciliation reports showing matched and unmatched payments with aging analysis
+
+### Requirement 14: Payment Provider Abstraction Architecture
+
+**User Story:** As a system administrator, I want a flexible payment architecture that works with any payment provider, so that we can integrate with different providers without code changes.
+
+#### Acceptance Criteria
+
+1. THE Payment_Abstraction_Layer SHALL provide uniform interfaces for payment processing regardless of underlying Payment_Provider
+2. WHEN integrating new Payment_Providers, THE HealthHub_Platform SHALL require only configuration changes, not code modifications
+3. THE HealthHub_Platform SHALL support Payment_Provider-specific features through configurable parameter mapping
+4. THE HealthHub_Platform SHALL maintain transaction logs in standardized format regardless of Payment_Provider
+5. THE HealthHub_Platform SHALL provide Payment_Provider adapter templates for common payment gateway integrations
+
+### Requirement 15: Role-Based Access Control
 
 **User Story:** As a system administrator, I want to control user access based on roles, so that sensitive data and functions are properly secured.
 
@@ -161,7 +216,7 @@ HealthHub is a comprehensive, digital-first Health Insurance Management platform
 4. THE HealthHub_Platform SHALL prevent unauthorized access to functions outside user role scope
 5. THE HealthHub_Platform SHALL log all access attempts and permission changes in Audit_Logs
 
-### Requirement 12: Comprehensive Audit Logging
+### Requirement 16: Comprehensive Audit Logging
 
 **User Story:** As a compliance officer, I want complete audit trails of all system activities, so that I can ensure regulatory compliance and investigate issues.
 
@@ -173,7 +228,7 @@ HealthHub is a comprehensive, digital-first Health Insurance Management platform
 4. THE Audit_Log SHALL capture data changes with before and after values for critical records
 5. THE HealthHub_Platform SHALL provide audit log search and filtering capabilities for investigations
 
-### Requirement 13: Dynamic Geographic Reporting
+### Requirement 17: Dynamic Geographic Reporting
 
 **User Story:** As a government agency administrator, I want reports at various geographic levels, so that I can analyze program performance across different regions under our jurisdiction.
 
@@ -185,7 +240,7 @@ HealthHub is a comprehensive, digital-first Health Insurance Management platform
 4. THE HealthHub_Platform SHALL compare performance metrics across different geographic areas
 5. THE HealthHub_Platform SHALL visualize geographic data using maps and charts
 
-### Requirement 14: Internal Messaging System
+### Requirement 18: Internal Messaging System
 
 **User Story:** As a government agency staff member, I want to communicate with colleagues through the platform, so that I can collaborate effectively on enrollee cases.
 
@@ -197,7 +252,7 @@ HealthHub is a comprehensive, digital-first Health Insurance Management platform
 4. THE HealthHub_Platform SHALL maintain message history for audit and reference purposes
 5. THE HealthHub_Platform SHALL encrypt all internal communications using end-to-end encryption
 
-### Requirement 15: Public Engagement Hub
+### Requirement 19: Public Engagement Hub
 
 **User Story:** As a resident, I want access to health insurance information and support resources, so that I can stay informed and get help when needed.
 
@@ -209,7 +264,7 @@ HealthHub is a comprehensive, digital-first Health Insurance Management platform
 4. THE HealthHub_Platform SHALL publish frequently asked questions and self-help guides
 5. THE HealthHub_Platform SHALL notify users of important updates through multiple communication channels
 
-### Requirement 16: Data Parser and Configuration Management
+### Requirement 20: Data Parser and Configuration Management
 
 **User Story:** As a system administrator, I want to parse and manage configuration files, so that I can maintain system settings and integrate with external systems.
 
@@ -221,7 +276,7 @@ HealthHub is a comprehensive, digital-first Health Insurance Management platform
 4. FOR ALL valid Configuration objects, parsing then printing then parsing SHALL produce an equivalent object (round-trip property)
 5. THE HealthHub_Platform SHALL validate configuration changes before applying them to production systems
 
-### Requirement 17: Medical Data Access Security
+### Requirement 21: Medical Data Access Security
 
 **User Story:** As an enrollee, I want my medical data to be securely accessible only at approved healthcare facilities, so that my privacy is protected while enabling efficient care.
 
@@ -233,7 +288,7 @@ HealthHub is a comprehensive, digital-first Health Insurance Management platform
 4. THE HealthHub_Platform SHALL require Healthcare_Provider authentication before granting medical data access
 5. IF unauthorized access is attempted, THEN THE HealthHub_Platform SHALL block access and alert security administrators
 
-### Requirement 18: Performance and Scalability
+### Requirement 22: Performance and Scalability
 
 **User Story:** As a government agency administrator, I want the platform to handle high user volumes efficiently, so that services remain available during peak usage periods.
 
@@ -245,7 +300,7 @@ HealthHub is a comprehensive, digital-first Health Insurance Management platform
 4. THE HealthHub_Platform SHALL maintain 99.9% uptime availability for critical services
 5. WHEN system load exceeds capacity, THE HealthHub_Platform SHALL queue requests and notify users of expected wait times
 
-### Requirement 19: Configuration-Based Branding and Customization
+### Requirement 23: Configuration-Based Branding and Customization
 
 **User Story:** As a government agency administrator, I want to customize the platform appearance with our agency branding through configuration files, so that residents see a familiar government interface.
 
@@ -257,7 +312,7 @@ HealthHub is a comprehensive, digital-first Health Insurance Management platform
 4. THE HealthHub_Platform SHALL support agency-specific terms of service and privacy policy documents via configuration
 5. THE HealthHub_Platform SHALL maintain branding consistency across all user interfaces based on configuration settings
 
-### Requirement 20: Deployment Configuration Management
+### Requirement 24: Deployment Configuration Management
 
 **User Story:** As a deployment administrator, I want to configure platform settings through configuration files, so that each agency deployment operates according to their specific policies and procedures.
 
@@ -269,7 +324,7 @@ HealthHub is a comprehensive, digital-first Health Insurance Management platform
 4. THE HealthHub_Platform SHALL maintain configuration version history and rollback capabilities
 5. THE HealthHub_Platform SHALL provide Deployment_Templates for common government agency setups
 
-### Requirement 21: Rapid Deployment and Setup
+### Requirement 25: Rapid Deployment and Setup
 
 **User Story:** As a deployment administrator, I want to deploy and configure HealthHub quickly for new government agencies, so that they can start using the platform with minimal setup time.
 
@@ -281,7 +336,7 @@ HealthHub is a comprehensive, digital-first Health Insurance Management platform
 4. THE HealthHub_Platform SHALL validate deployment configuration before activating production access
 5. THE HealthHub_Platform SHALL support deployment rollback in case of configuration errors
 
-### Requirement 22: Client-Specific Business Rules Engine
+### Requirement 26: Client-Specific Business Rules Engine
 
 **User Story:** As an agency administrator, I want to configure business rules specific to our agency requirements, so that the platform enforces our policies automatically.
 
@@ -293,7 +348,7 @@ HealthHub is a comprehensive, digital-first Health Insurance Management platform
 4. THE HealthHub_Platform SHALL validate business rule configurations for consistency and completeness
 5. THE HealthHub_Platform SHALL provide rule testing capabilities before production deployment
 
-### Requirement 23: Environment-Specific Configuration
+### Requirement 27: Environment-Specific Configuration
 
 **User Story:** As a deployment administrator, I want to manage different configuration settings for development, staging, and production environments, so that deployments are consistent and reliable.
 
@@ -305,7 +360,7 @@ HealthHub is a comprehensive, digital-first Health Insurance Management platform
 4. THE HealthHub_Platform SHALL provide configuration comparison tools between environments
 5. THE HealthHub_Platform SHALL maintain audit trails of configuration changes across environments
 
-### Requirement 24: Agency Data Migration and Backup
+### Requirement 28: Agency Data Migration and Backup
 
 **User Story:** As an agency administrator, I want secure data backup and migration capabilities, so that our agency information is protected and portable.
 
@@ -317,7 +372,7 @@ HealthHub is a comprehensive, digital-first Health Insurance Management platform
 4. THE HealthHub_Platform SHALL provide migration status tracking and rollback capabilities
 5. THE HealthHub_Platform SHALL encrypt all backup data using agency-specific encryption keys
 
-### Requirement 25: Performance Monitoring and Optimization
+### Requirement 29: Performance Monitoring and Optimization
 
 **User Story:** As an agency administrator, I want comprehensive performance monitoring for our deployment, so that I can ensure optimal service delivery to our residents.
 
@@ -329,7 +384,7 @@ HealthHub is a comprehensive, digital-first Health Insurance Management platform
 4. THE HealthHub_Platform SHALL provide performance optimization recommendations based on usage patterns
 5. THE HealthHub_Platform SHALL maintain performance history for trend analysis and capacity planning
 
-### Requirement 26: Security and Compliance Management
+### Requirement 30: Security and Compliance Management
 
 **User Story:** As a security administrator, I want robust security measures and compliance reporting, so that we maintain the highest security standards for government data.
 
@@ -341,7 +396,7 @@ HealthHub is a comprehensive, digital-first Health Insurance Management platform
 4. THE HealthHub_Platform SHALL maintain separate security certificates and authentication systems per deployment
 5. THE HealthHub_Platform SHALL comply with government security standards (FedRAMP, FISMA) and generate compliance reports
 
-### Requirement 27: Integration and API Management
+### Requirement 31: Integration and API Management
 
 **User Story:** As a system administrator, I want to integrate HealthHub with existing agency systems, so that we can leverage current infrastructure and data sources.
 
@@ -353,7 +408,7 @@ HealthHub is a comprehensive, digital-first Health Insurance Management platform
 4. THE HealthHub_Platform SHALL provide API documentation and testing tools for integration development
 5. THE HealthHub_Platform SHALL monitor API usage and performance for integrated systems
 
-### Requirement 28: Scalability and Resource Management
+### Requirement 32: Scalability and Resource Management
 
 **User Story:** As an agency administrator, I want the platform to scale efficiently with our growing user base, so that performance remains consistent as enrollment increases.
 
